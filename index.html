@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conectar ao Wi-Fi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 32px 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .wifi-icon {
+      width: 50px;
+      height: 50px;
+      background-color: #eef5ff;
+      color: #007aff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+    }
+
+    .wifi-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      color: #1a1a1a;
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+
+    .info-box {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .label {
+      font-size: 0.75rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .value {
+      font-size: 1.05rem;
+      color: #212529;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-copy {
+      background-color: #007aff;
+      color: white;
+    }
+
+    .btn-copy:active {
+      background-color: #0056b3;
+      transform: scale(0.98);
+    }
+
+    .btn-wifi {
+      background-color: #f1f3f5;
+      color: #343a40;
+    }
+
+    .btn-wifi:active {
+      background-color: #e9ecef;
+      transform: scale(0.98);
+    }
+
+    .toast {
+      display: none;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .instructions {
+      font-size: 0.8rem;
+      color: #868e96;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="wifi-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3C7.95 3 4.21 4.34 1.2 6.6L3 9C5.5 7.12 8.62 6 12 6C15.38 6 18.5 7.12 21 9L22.8 6.6C19.79 4.34 16.05 3 12 3ZM12 9C9.3 9 6.81 9.89 4.8 11.4L6.6 13.8C8.1 12.67 9.97 12 12 12C14.03 12 15.9 12.67 17.4 13.8L19.2 11.4C17.19 9.89 14.7 9 12 9ZM12 15C10.65 15 9.4 15.45 8.4 16.2L12 21L15.6 16.2C14.6 15.45 13.35 15 12 15Z"/>
+      </svg>
+    </div>
+
+    <h1>Conectar ao Wi-Fi</h1>
+
+    <!-- DADOS DA REDE (EDITE AQUI SE PRECISAR) -->
+    <div class="info-box">
+      <span class="label">Nome da Rede (SSID)</span>
+      <div class="value" id="ssid">NOME_DA_SUA_REDE</div>
+    </div>
+
+    <div class="info-box">
+      <span class="label">Senha</span>
+      <div class="value" id="password">SUA_SENHA_AQUI</div>
+    </div>
+
+    <!-- NOTIFICAÇÃO DE COPIADO -->
+    <div id="toast" class="toast">✓ Senha copiada com sucesso!</div>
+
+    <!-- BOTÕES DE AÇÃO -->
+    <button class="btn-copy" onclick="copyPassword()">
+      1. Copiar Senha
+    </button>
+    <button class="btn-wifi" onclick="openWifiSettings()">
+      2. Abrir Configurações de Wi-Fi
+    </button>
+
+    <!-- INSTRUÇÃO -->
+    <p class="instructions">
+      Após copiar a senha, abra as configurações do seu Wi-Fi, escolha a rede acima e cole a senha.
+    </p>
+  </div>
+
+  <script>
+    function copyPassword() {
+      const passwordText = document.getElementById('password').innerText;
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(passwordText).then(showToast);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = passwordText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast();
+        } catch (err) {
+          alert("Não foi possível copiar automaticamente. Copie manualmente.");
+        }
+        document.body.removeChild(textArea);
+      }
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => { 
+        toast.style.display = 'none'; 
+      }, 3000);
+    }
+
+    function openWifiSettings() {
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      if (isAndroid) {
+        window.location.href = "intent://settings/wifi#Intent;scheme=android-intent;end;";
+      } else {
+        alert("No iPhone/iOS: Arraste a tela para abrir a Central de Controle, mantenha pressionado o ícone de Wi-Fi e conecte-se na rede.");
+      }
+    }
+  </script>
+
+</body>
+</html>
