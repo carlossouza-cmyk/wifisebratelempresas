@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conectar ao Wi-Fi</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
+    h1 { font-size: 1.4rem; color: #1a1a1a; margin-bottom: 20px; }
+    .info-box { background: #f0f4f9; padding: 12px; border-radius: 8px; margin-bottom: 12px; font-weight: 600; color: #333; word-break: break-all; }
+    .label { font-size: 0.85rem; color: #666; font-weight: normal; margin-bottom: 4px; display: block; }
+    button { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 12px; transition: background 0.2s; }
+    .btn-copy { background-color: #007aff; color: white; }
+    .btn-wifi { background-color: #e5e5ea; color: #1c1c1e; }
+    .toast { display: none; margin-bottom: 12px; font-size: 0.85rem; color: #28a745; font-weight: bold; }
+    .instructions { font-size: 0.8rem; color: #777; line-height: 1.4; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Conectar ao Wi-Fi</h1>
+
+    <!-- DADOS DA REDE -->
+    <div class="info-box">
+      <span class="label">Nome da Rede (SSID):</span>
+      <span id="ssid">Sebratel_Corporativo</span>
+    </div>
+
+    <div class="info-box">
+      <span class="label">Senha:</span>
+      <span id="password">Sebratel2018</span>
+    </div>
+
+    <!-- MENSAGEM DE COPIADO -->
+    <div id="toast" class="toast">✓ Senha copiada!</div>
+
+    <!-- BOTOES DE ACAO -->
+    <button class="btn-copy" onclick="copyPassword()">1. Copiar Senha</button>
+    <button class="btn-wifi" onclick="openWifiSettings()">2. Abrir Configurações do Wi-Fi</button>
+
+    <!-- INSTRUCOES -->
+    <p class="instructions">
+      Após copiar a senha, abra as configurações do Wi-Fi, selecione a rede e cole a senha.
+    </p>
+  </div>
+
+  <script>
+    function copyPassword() {
+      const passwordText = document.getElementById('password').innerText;
+      navigator.clipboard.writeText(passwordText).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+      });
+    }
+
+    function openWifiSettings() {
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      if (isAndroid) {
+        // Tenta abrir a tela de Wi-Fi no Android
+        window.location.href = "intent://settings/wifi#Intent;scheme=android-intent;end;";
+      } else {
+        // No iOS não é possível abrir direto
+        alert("No iPhone: deslize a tela para abrir a Central de Controle, toque no Wi-Fi e cole a senha.");
+      }
+    }
+  </script>
+
+</body>
+</html>
